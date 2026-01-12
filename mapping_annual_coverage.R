@@ -24,6 +24,17 @@ years <- 2014:2024
 base_map <- load_map("bbs") %>%
   filter(country == "Canada")
 
+all_routes_ever_run <- bbs_unacceptable$routes %>%
+  filter(country == "CA",
+         year %in% years) %>%
+  select(route_name,longitude,latitude) %>%
+  distinct() %>%
+  mutate(lat = latitude,
+         long = longitude) %>%
+  st_as_sf(coords = c("long","lat"), crs = 4326) %>%
+  st_transform(crs = bbsBayes2::equal_area_crs)
+
+
 surveys_by_year <- bbs_unacceptable$routes %>%
   filter(country == "CA",
          year %in% years) %>%
@@ -42,13 +53,16 @@ for(y in years){
     filter(year == y)
 
   tplot <- ggplot()+
-    geom_sf(data = base_map, colour = grey(0.8))+
+    geom_sf(data = base_map, colour = grey(0.8),fill = NA)+
+    geom_sf(data = all_routes_ever_run, colour = grey(0.7))+
     geom_sf(data = tmp,
             aes(colour = acceptable),
             alpha = 0.7)+
-    scale_colour_viridis_d(begin = 0.2, end = 0.9,
+    scale_colour_viridis_d(begin = 0.2, end = 0.7,
                            direction = -1)+
-    labs(title = y)+
+    labs(title = paste(y),
+         caption = paste("Grey points are Canadian BBS routes with at least one survey conducted since",years[1],
+                         "Coloured routes were surveyed in the years indicated in the title."))+
     theme_bw()
 
 print(tplot)
@@ -69,13 +83,16 @@ pdf("2016-2019_vs_2021-2024_BBS_surveys_Canada_map.pdf",
     filter(year %in% c(2016:2019))
 
   tplot <- ggplot()+
-    geom_sf(data = base_map, colour = grey(0.8))+
+    geom_sf(data = base_map, colour = grey(0.8),fill = NA)+
+    geom_sf(data = all_routes_ever_run, colour = grey(0.7))+
     geom_sf(data = tmp,
             aes(colour = acceptable),
             alpha = 0.7)+
     scale_colour_viridis_d(begin = 0.2, end = 0.9,
                            direction = -1)+
-    labs(title = "2016-2019")+
+    labs(title = "2016-2019",
+         caption = paste("Grey points are Canadian BBS routes with at least one survey conducted since",years[1],
+         "Coloured routes were surveyed in the years indicated in the title."))+
     theme_bw()
 
   print(tplot)
@@ -85,13 +102,16 @@ pdf("2016-2019_vs_2021-2024_BBS_surveys_Canada_map.pdf",
     filter(year %in% c(2021:2024))
 
   tplot <- ggplot()+
-    geom_sf(data = base_map, colour = grey(0.8))+
+    geom_sf(data = base_map, colour = grey(0.8), fill = NA)+
+    geom_sf(data = all_routes_ever_run, colour = grey(0.7))+
     geom_sf(data = tmp,
             aes(colour = acceptable),
             alpha = 0.7)+
     scale_colour_viridis_d(begin = 0.2, end = 0.9,
                            direction = -1)+
-    labs(title = "2021-2024")+
+    labs(title = "2021-2024",
+         caption = paste("Grey points are Canadian BBS routes with at least one survey conducted since",years[1],
+         "Coloured routes were surveyed in the years indicated in the title."))+
     theme_bw()
 
   print(tplot)
