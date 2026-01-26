@@ -19,7 +19,7 @@ saveRDS(bbs_unacceptable,"bbs_unacceptable_full.rds")
 }
 
 
-years <- 2014:2024
+years <- 1970:2024
 
 base_map <- load_map("bbs") %>%
   filter(country == "Canada")
@@ -115,6 +115,74 @@ pdf("2016-2019_vs_2021-2024_BBS_surveys_Canada_map.pdf",
     theme_bw()
 
   print(tplot)
+
+
+
+dev.off()
+
+
+
+
+
+pdf("1970-2014_vs_2015-2019_vs_2021-2024_BBS_surveys_Canada_map.pdf",
+    width = 11,height = 8.5)
+
+
+tmp <- surveys_by_year %>%
+  filter(year %in% c(1970:2014))
+
+tplot <- ggplot()+
+  geom_sf(data = base_map, colour = grey(0.8),fill = NA)+
+  geom_sf(data = all_routes_ever_run, colour = grey(0.7))+
+  geom_sf(data = tmp,
+          aes(colour = acceptable),
+          alpha = 0.7)+
+  scale_colour_viridis_d(begin = 0.2, end = 0.9,
+                         direction = -1)+
+  labs(title = "1970-2014",
+       caption = paste("Grey points are Canadian BBS routes with at least one survey conducted since 1970",
+                       "Coloured routes were surveyed during years 1970-2014"))+
+theme_bw()
+
+print(tplot)
+
+
+tmp <- surveys_by_year %>%
+  filter(year %in% c(2015:2019))
+
+tplot <- ggplot()+
+  geom_sf(data = base_map, colour = grey(0.8),fill = NA)+
+  geom_sf(data = all_routes_ever_run, colour = grey(0.7))+
+  geom_sf(data = tmp,
+          aes(colour = acceptable),
+          alpha = 0.7)+
+  scale_colour_viridis_d(begin = 0.2, end = 0.9,
+                         direction = -1)+
+  labs(title = "2015-2019",
+       caption = paste("Grey points are Canadian BBS routes with at least one survey conducted since 1970",
+                       "Coloured routes were surveyed during years 2015-2019"))+
+  theme_bw()
+
+print(tplot)
+
+
+tmp <- surveys_by_year %>%
+  filter(year %in% c(2021:2024))
+
+tplot <- ggplot()+
+  geom_sf(data = base_map, colour = grey(0.8), fill = NA)+
+  geom_sf(data = all_routes_ever_run, colour = grey(0.7))+
+  geom_sf(data = tmp,
+          aes(colour = acceptable),
+          alpha = 0.7)+
+  scale_colour_viridis_d(begin = 0.2, end = 0.9,
+                         direction = -1)+
+  labs(title = "2021-2024",
+       caption = paste("Grey points are Canadian BBS routes with at least one survey conducted since 1970",
+                       "Coloured routes were surveyed during years 2021-2024"))+
+  theme_bw()
+
+print(tplot)
 
 
 
